@@ -21,7 +21,7 @@ s.cash=round(s.cash-cost);if(c.type==='demo')s.fuel=round(s.fuel-1);
 s.hand.splice(i,1);s.discard.push(CARDS.indexOf(c));s.played=true;
 switch(c.type){case 'happy':happy(5);break;case 'fund':fund(1);break;case 'drop':s.fuelPrice=Math.max(.25,round(s.fuelPrice-.5));break;case 'science':s.fuel=round(s.fuel+(s.employees.Expert?.5:.25));break;case 'pres':fund(s.employees['Presidential Relations']?1:.5);break;case 'worker':draw(1);break;case 'protest':happy(5);fund(-.5);break;case 'demo':happy(15);fund(-.5);break;case 'recruit':s.employees[job]++;break;case 'oxygen':happy(-5);s.fuel=round(s.fuel+1);break;case 'orbital':s.orbitalReady=true;break;case 'fuelprotest':happy(15);s.fuelPrice=round(s.fuelPrice+.5);break;}
 note(`Played ${c.name}${job?' — hired '+job:''}.`);commit();}
-function finish(){const completed=[];for(const m of s.missions){m.remaining--;if(m.remaining<=0)completed.push(m);}s.missions=s.missions.filter(m=>m.remaining>0);
+function finish(){const completed=[];for(const m of s.missions){if(m.started<s.year)m.remaining--;if(m.remaining<=0)completed.push(m);}s.missions=s.missions.filter(m=>m.remaining>0);
 for(const m of completed){const x=MISSIONS[m.id];s.launches++;happy(x.happy);fund(x.funding);s.cash=round(s.cash+x.cash);note(`${x.name} succeeded! +${x.happy}% happiness, +${x.funding}% funding, +${money(x.cash)}, +1 launch.`);}
 check();if(s.over)return;s.year++;s.cash=round(s.cash+s.funding);s.phase='card';s.drew=false;s.played=false;note(`Year ${s.year}: received ${money(s.funding)} funding.`);}
 function act(type,id){if(s.phase!=='action'||s.over)return;if(type==='money'){s.cash=round(s.cash+3);note('Action: gain 3 MD.');}
